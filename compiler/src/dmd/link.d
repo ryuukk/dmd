@@ -245,6 +245,8 @@ public int runLINK()
         {
             OutBuffer cmdbuf;
             cmdbuf.writestring("/NOLOGO");
+            cmdbuf.writestring("/ICF");
+            cmdbuf.writestring("/REF");
             for (size_t i = 0; i < global.params.objfiles.length; i++)
             {
                 cmdbuf.writeByte(' ');
