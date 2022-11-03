@@ -1058,7 +1058,7 @@ public int runPreprocessor(const(char)[] cpp, const(char)[] filename, const(char
                  */
                 OutBuffer buf;
                 buf.writestring(cpp);
-                buf.printf(" /P /Zc:preprocessor /PD /nologo %.*s /FI%s /Fi%.*s",
+                buf.printf(" /std:c11 /P /Zc:preprocessor /PD /nologo %.*s /FI%s /Fi%.*s",
                     cast(int)filename.length, filename.ptr, importc_h, cast(int)output.length, output.ptr);
 
                 /* Append preprocessor switches to command line
