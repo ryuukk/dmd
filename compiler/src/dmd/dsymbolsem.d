@@ -4641,7 +4641,7 @@ private extern(C++) final class DsymbolSemanticVisitor : Visitor
             assert(sc.parent && sc.func);
             sd.parent = sc.parent;
         }
-        assert(sd.parent && !sd.isAnonymous());
+        assert(sd.parent);
 
         if (sd.errors)
             sd.type = Type.terror;

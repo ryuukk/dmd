@@ -8420,7 +8420,30 @@ LagainStc:
 
         case TOK.auto_:
             {
-                if (peekNext() == TOK.ref_ && peekNext2() == TOK.leftParenthesis)
+                if (peekNext() == TOK.dot)
+                {
+                    nextToken();
+                    nextToken();
+                    id = token.ident;
+                    printf("you want auto type inference right? %s\n", token.toChars());
+
+                    auto sid = Identifier.generateId("auto");
+                    auto sdecl = new AST.StructDeclaration(loc, sid, false);
+                    sdecl.storage_class |= STC.auto_;
+
+                    
+                    auto r = cast(AST.TypeStruct)sdecl.type;
+                    r.sym.parent = mod;
+
+                    sdecl.members = new AST.Dsymbols();
+                    sdecl.members.push(new AST.VarDeclaration(loc, r, token.ident, null, 0));
+
+                    e = new AST.DotIdExp(loc, new AST.TypeExp(loc, r), token.ident);
+                    nextToken();
+                    
+                    return e;
+                }
+                else if (peekNext() == TOK.ref_ && peekNext2() == TOK.leftParenthesis)
                 {
                     Token* tk = peekPastParen(peek(peek(&token)));
                     if (skipAttributes(tk, &tk) && (tk.value == TOK.goesTo || tk.value == TOK.leftCurly))

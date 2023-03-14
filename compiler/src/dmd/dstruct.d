@@ -262,16 +262,59 @@ extern (C++) class StructDeclaration : AggregateDeclaration
 
     override final Dsymbol search(const ref Loc loc, Identifier ident, int flags = SearchLocalsOnly)
     {
+        import core.stdc.stdio;
         //printf("%s.StructDeclaration::search('%s', flags = x%x)\n", toChars(), ident.toChars(), flags);
         if (_scope && !symtab)
             dsymbolSemantic(this, _scope);
 
-        if (!members || !symtab) // opaque or semantic() is not yet called
+        if (!members || !symtab && ((storage_class & STC.auto_) == 0)) // opaque or semantic() is not yet called
         {
             // .stringof is always defined (but may be hidden by some other symbol)
             if(ident != Id.stringof && !(flags & IgnoreErrors) && semanticRun < PASS.semanticdone)
                 error("is forward referenced when looking for `%s`", ident.toChars());
             return null;
+        }
+
+        if ((storage_class & STC.auto_) != 0 || flags == -1)
+        {
+            printf("search everywhere for: %s\n", ident.toChars());
+
+            if (parent)
+            {
+                printf("has parent: %s\n", typeof(parent).stringof.ptr);
+
+                if (auto mod = cast(Module) parent)
+                {
+                    printf("is module! %s\n", mod.ident.toChars);
+
+                    auto members = mod.members;
+
+                    if(members)
+                    {
+                        printf("has members \n");
+
+                        members.foreachDsymbol(  s => printf("   :: %s\n", s.ident.toChars) );
+                    }
+
+
+                    auto found = mod.search(Loc.initial, ident, 0);
+                    if (found)
+                    {
+                        printf("found\n");
+                        return found;
+                    }
+
+                        // foreach(it; Module.modules.tab.asRange)
+                        // {
+                        //     Identifier id = it.key;
+                        //     Dsymbol sym = it.value;
+                        //     found = sym.search(Loc.initial, ident, 0);
+                        //     printf("   id: %s\n", id.toChars);
+                        // }
+                }
+            }
+
+            flags = 0;
         }
 
         return ScopeDsymbol.search(loc, ident, flags);
