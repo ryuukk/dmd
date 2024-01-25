@@ -782,8 +782,8 @@ enum HIGHLIGHT : ubyte
 {
     Default    = Color.black,           // back to whatever the console is set at
     Escape     = '\xFF',                // highlight Color follows
-    Identifier = Color.white,
-    Keyword    = Color.white,
+    Identifier = Color.darkGray,
+    Keyword    = Color.darkGray,
     Literal    = Color.white,
     Comment    = Color.darkGray,
     Other      = Color.cyan,           // other tokens
