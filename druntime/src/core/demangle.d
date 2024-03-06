@@ -3273,3 +3273,12 @@ private struct BufSlice
     auto getSlice() inout nothrow scope { return buf[from .. to]; }
     size_t length() const scope { return to - from; }
 }
+
+extern(C) export int __d_demangle(const(char*) mangled, char* buffer, size_t bufferLength)
+{
+    if (mangled == null) return 0;
+
+    auto ret = demangle( cast(char[]) mangled[0 .. strlen(mangled)], buffer[0 .. bufferLength] );
+    buffer[ret.length] = 0;
+    return 1;
+}
