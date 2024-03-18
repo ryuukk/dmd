@@ -284,6 +284,7 @@ class PrettyFuncInitExp;
 class ObjcClassReferenceExp;
 class ClassReferenceExp;
 class ThrownExceptionExp;
+class InferenceExp;
 class UnaExp;
 class BinExp;
 class BinAssignExp;
@@ -2062,6 +2063,7 @@ enum class EXP : uint8_t
     compoundLiteral = 124u,
     _Generic_ = 125u,
     interval = 126u,
+    inference = 126u,
     loweredAssignExp = 127u,
 };
 
@@ -2233,6 +2235,7 @@ public:
     ObjcClassReferenceExp* isObjcClassReferenceExp();
     ClassReferenceExp* isClassReferenceExp();
     ThrownExceptionExp* isThrownExceptionExp();
+    InferenceExp* isInferenceExp();
     UnaExp* isUnaExp();
     BinExp* isBinExp();
     BinAssignExp* isBinAssignExp();
@@ -2614,6 +2617,13 @@ public:
     bool wantsym;
     bool arrow;
     static DotIdExp* create(const Loc& loc, Expression* e, Identifier* ident);
+    void accept(Visitor* v) override;
+};
+
+class InferenceExp final : public Expression
+{
+public:
+    Identifier* id;
     void accept(Visitor* v) override;
 };
 
@@ -5620,6 +5630,7 @@ struct ASTCodegen final
     using ImportExp = ::ImportExp;
     using InExp = ::InExp;
     using IndexExp = ::IndexExp;
+    using InferenceExp = ::InferenceExp;
     using IntegerExp = ::IntegerExp;
     using InterpExp = ::InterpExp;
     using IntervalExp = ::IntervalExp;
@@ -5886,6 +5897,7 @@ public:
     virtual void visit(ClassReferenceExp* e);
     virtual void visit(VoidInitExp* e);
     virtual void visit(ThrownExceptionExp* e);
+    virtual void visit(InferenceExp* e);
     virtual void visit(LoweredAssignExp* e);
 };
 

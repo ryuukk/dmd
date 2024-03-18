@@ -423,6 +423,7 @@ enum EXP : ubyte
     compoundLiteral, // ( type-name ) { initializer-list }
     _Generic,
     interval,
+    inference, // $id
 
     loweredAssignExp,
 }
